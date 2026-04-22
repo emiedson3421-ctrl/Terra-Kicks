@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Terra Kicks</title>
+
+<style>
+body{font-family:sans-serif;background:#F5F0E6;padding:20px;}
+h1{color:#8B5A2B;}
+
+form{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  max-width:400px;
+}
+
+input{
+  width:100%;
+  margin:5px 0;
+  padding:10px;
+}
+
+button{
+  background:#8B5A2B;
+  color:white;
+  padding:10px;
+  border:none;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.lista{
+  margin-top:30px;
+}
+
+.item{
+  background:white;
+  padding:10px;
+  margin:10px 0;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Panel Admin - Terra Kicks</h1>
+
+<form onsubmit="agregarProducto(event)">
+  <input id="nombre" placeholder="Nombre" required>
+  <input id="precio" type="number" placeholder="Precio" required>
+  <input id="imagen" placeholder="URL Imagen" required>
+  <button>Agregar producto</button>
+</form>
+
+<div class="lista" id="lista"></div>
+
+<script>
+let productos = JSON.parse(localStorage.getItem("productos")) || [];
+
+function guardar(){
+  localStorage.setItem("productos", JSON.stringify(productos));
+  render();
+}
+
+function agregarProducto(e){
+  e.preventDefault();
+
+  const nuevo = {
+    name:document.getElementById("nombre").value,
+    price:Number(document.getElementById("precio").value),
+    img:document.getElementById("imagen").value
+  };
+
+  productos.push(nuevo);
+  guardar();
+
+  e.target.reset();
+}
+
+function eliminar(i){
+  productos.splice(i,1);
+  guardar();
+}
+
+function render(){
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  productos.forEach((p,i)=>{
+    lista.innerHTML += `
+      <div class="item">
+        <img src="${p.img}" width="100"><br>
+        <b>${p.name}</b><br>
+        $${p.price}
+        <br>
+        <button onclick="eliminar(${i})">Eliminar</button>
+      </div>
+    `;
+  });
+}
+
+render();
+</script>
+
+</body>
+</html>
